@@ -243,7 +243,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <span class="k">이번 호 · ${esc(ISSUE.badge)}</span>
         <h2>${esc(ISSUE.note.headline)}</h2>
         <p>${esc(ISSUE.note.subtitle)}</p>
-        <span class="meta"><span class="num">${fd(ISSUE.published)}</span><span>·</span><span>${readMin(ISSUE)}분 읽기</span><span>·</span><span>글로벌정보부</span></span>
+        <span class="meta"><span>${readMin(ISSUE)}분 읽기</span><span>·</span><span>글로벌정보부</span></span>
       </a>
       <section class="back-issues" aria-labelledby="h-issues">
         <div class="feed-head"><h2 id="h-issues">발행된 호</h2><span>${ISSUES.length}개 호 · 통보 ${UNIQ.length}건</span></div>

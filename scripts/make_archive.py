@@ -123,12 +123,16 @@ def build_month(m, label, f, t):
     }
 
 
-if len(sys.argv) > 2 and sys.argv[2] == 'april':   # 4월 단독판
-    x = build_month('04', '단독판', '2026-04-01', '2026-04-30')
-    x.update({'id': '2026-04', 'label': '2026년 4월분', 'edition': '', 'seq': 1})
-    (ROOT / 'data' / 'april.json').write_text(json.dumps([x], ensure_ascii=False, indent=1), encoding='utf-8')
+if len(sys.argv) > 2 and sys.argv[2] in ('april', 'single'):   # 단독판: single <월> (april = single 04)
+    import calendar
+    m = '04' if sys.argv[2] == 'april' else sys.argv[3].zfill(2)
+    last = calendar.monthrange(2026, int(m))[1]
+    x = build_month(m, '단독판', f'2026-{m}-01', f'2026-{m}-{last:02d}')
+    x.update({'id': f'2026-{m}', 'label': f'2026년 {int(m)}월분', 'edition': '', 'seq': 1})
+    out = ROOT / 'data' / ('april.json' if m == '04' else f'2026-{m}.json')
+    out.write_text(json.dumps([x], ensure_ascii=False, indent=1), encoding='utf-8')
     c = collections.Counter(i['group'] for i in x['items'])
-    print(x['badge'], len(x['items']), dict(c), x['raw'])
+    print(out.name, x['badge'], len(x['items']), dict(c), x['raw'])
     sys.exit()
 issues = [build_month('09', '9월호', '2026-09-01', '2026-09-30'), build_month('10', '10월호', '2026-10-01', '2026-10-31')]
 weekly = json.load(open(ROOT / 'data' / 'issues.json'))
