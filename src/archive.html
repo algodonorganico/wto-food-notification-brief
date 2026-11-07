@@ -1,0 +1,382 @@
+<title>WTO 식품 통보 브리프</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* 레이아웃: 블로그형 통보 정리. 홈(발행물 소개 → 이번 호 글 → 통보 피드·필터) / 글(#issue-n) / 통보 상세(#n-…). 본문 680px, 피드 760px */
+:root {
+  --bg: #F4F6FA;
+  --card: #FFFFFF;
+  --ink: #171B33;
+  --ink-2: #4A5170;
+  --ink-3: #7A819B;
+  --rule: #DDE2EC;
+  --tint: #ECF0F7;
+  --accent: #1F4AA8;
+  --accent-soft: #E3EAF8;
+  --warn: #8F5400;
+  --warn-soft: #FBEFD9;
+  --alert: #C8102E;
+  --alert-soft: #FCE8EB;
+  --focus: #1F4AA8;
+  --wto-red: #E30613;
+  --wto-blue: #1F4AA8;
+  --wto-green: #1E9B4B;
+  --eping-top: #8FB0E6;
+  --eping-bot: #1D3E9A;
+  --font: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0D1222; --card: #141A2E; --ink: #E8ECF7; --ink-2: #AAB2CC; --ink-3: #7B84A3; --rule: #252D47; --tint: #19203A; --accent: #8FB0F5; --accent-soft: #1C2A55; --warn: #E8AE57; --warn-soft: #33270F; --alert: #F4899A; --alert-soft: #3A1A24; --focus: #8FB0F5; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0D1222; --card: #141A2E; --ink: #E8ECF7; --ink-2: #AAB2CC; --ink-3: #7B84A3; --rule: #252D47; --tint: #19203A; --accent: #8FB0F5; --accent-soft: #1C2A55; --warn: #E8AE57; --warn-soft: #33270F; --alert: #F4899A; --alert-soft: #3A1A24; --focus: #8FB0F5; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 72px; }
+a { color: inherit; }
+h1, h2, h3 { word-break: keep-all; overflow-wrap: anywhere; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+button { font: inherit; cursor: pointer; }
+.col { max-width: 680px; margin: 0 auto; }
+.wide { max-width: 760px; margin: 0 auto; }
+.num { font-variant-numeric: tabular-nums; }
+.sym { font-family: var(--mono); font-size: 12px; }
+
+/* 상단 바 */
+.pub { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--rule); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.pub::before { content: ""; display: block; height: 4px; margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); background: linear-gradient(90deg, var(--wto-red) 0 33.3%, var(--wto-blue) 33.3% 66.6%, var(--wto-green) 66.6%); }
+.pub .wide { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 12px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+.logo { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(160deg, var(--eping-top), var(--eping-bot)); color: #FFFFFF; display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+.bar-actions { display: flex; align-items: center; gap: 8px; }
+.ghost { font-size: 13.5px; color: var(--ink-2); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 6px 12px; display: inline-flex; gap: 6px; align-items: center; }
+.ghost[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.ghost .n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ghost { flex: none; white-space: nowrap; }
+.btn { font-size: 14px; font-weight: 700; border-radius: 999px; padding: 7px 16px; border: 1px solid var(--accent); background: var(--accent); color: var(--card); }
+
+/* 홈 */
+.hero { text-align: center; padding: 48px 0 32px; display: grid; gap: 12px; justify-items: center; }
+.hero .logo { width: 56px; height: 56px; border-radius: 14px; font-size: 26px; }
+.hero h1 { margin: 0; font-size: clamp(30px, 6vw, 40px); font-weight: 800; letter-spacing: -0.03em; }
+.hero p { margin: 0; color: var(--ink-2); font-size: 16.5px; line-height: 1.6; max-width: 32em; }
+.hero small { color: var(--ink-3); font-size: 13px; }
+.featured { display: grid; gap: 8px; padding: 22px 24px; background: var(--card); border: 1px solid var(--rule); border-radius: 14px; text-decoration: none; }
+.featured:hover h2 { color: var(--accent); }
+.featured .k { font-size: 12.5px; font-weight: 700; color: var(--accent); }
+.featured h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; }
+.featured p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.meta { font-size: 13px; color: var(--ink-3); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.feed-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 40px 0 12px; flex-wrap: wrap; }
+.feed-head h2 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.015em; }
+.feed-head span { font-size: 13px; color: var(--ink-3); }
+.toolbar { display: grid; gap: 10px; padding: 14px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; }
+.toolbar .row1 { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 8px; }
+@media (max-width: 600px) { .toolbar .row1 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .toolbar .row1 input { grid-column: 1 / -1; } }
+.toolbar input[type=search], .toolbar select { font: inherit; font-size: 14px; color: var(--ink); background: var(--tint); border: 1px solid var(--rule); border-radius: 8px; padding: 7px 10px; min-height: 36px; min-width: 0; }
+.toolbar .row2 { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.toolbar label.chk { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.toolbar label.chk input { width: 16px; height: 16px; accent-color: var(--accent); }
+.toolbar .clear { margin-left: auto; background: none; border: 0; color: var(--accent); font-size: 13px; font-weight: 700; padding: 0; }
+.feed { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 12px; }
+.ncard { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; }
+.ncard:hover { border-color: var(--ink-3); }
+.nmeta { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; font-size: 12.5px; color: var(--ink-3); }
+.nmeta b { color: var(--ink); font-weight: 700; font-size: 13px; }
+.badge { font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 5px; background: var(--tint); color: var(--ink-2); }
+.badge.alert { background: var(--alert-soft); color: var(--alert); }
+.badge.accent { background: var(--accent-soft); color: var(--accent); }
+.ncard h3 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; }
+.ncard h3 a { text-decoration: none; }
+.ncard h3 a:hover { color: var(--accent); }
+.ncard .orig { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nfoot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 12.5px; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 10px; margin-top: 2px; }
+.nfoot .due { color: var(--ink-2); }
+.nfoot .due.soon { color: var(--warn); font-weight: 700; }
+.nfoot .sp { flex: 1; }
+.mark { background: none; border: 0; color: var(--ink-3); font-size: 12.5px; padding: 2px 4px; display: inline-flex; gap: 4px; align-items: center; }
+.mark[aria-pressed="true"] { color: var(--accent); font-weight: 700; }
+.mark svg { width: 14px; height: 14px; }
+.more { color: var(--ink); font-weight: 700; text-decoration: none; font-size: 12.5px; }
+.more:hover { color: var(--accent); }
+.empty { text-align: center; padding: 40px 16px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; color: var(--ink-2); display: grid; gap: 8px; justify-items: center; }
+.empty b { color: var(--ink); }
+.about { padding: 36px 0 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.75; display: grid; gap: 8px; }
+.about h3 { margin: 0; color: var(--ink); font-size: 15px; }
+.about p { margin: 0; }
+
+/* 글·상세 공통 */
+.back { font-size: 14px; color: var(--ink-3); text-decoration: none; width: fit-content; }
+.back:hover { color: var(--accent); }
+.post-head { padding: 40px 0 24px; display: grid; gap: 14px; }
+.kicker { font-size: 13px; font-weight: 700; color: var(--accent); }
+.post-head h1 { margin: 0; font-size: clamp(28px, 6vw, 40px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.28; text-wrap: balance; }
+.subtitle { margin: 0; font-size: 18.5px; color: var(--ink-2); line-height: 1.55; }
+.byline { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-top: 4px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+.byline b { display: block; font-size: 14.5px; font-weight: 700; }
+.byline span { font-size: 13px; color: var(--ink-3); }
+.byline .sp { flex: 1; }
+.prose { font-size: 18px; line-height: 1.85; }
+.prose p { margin: 0 0 1.4em; }
+.prose h2 { font-size: 23px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.4; margin: 2em 0 0.6em; text-wrap: balance; }
+.refs { list-style: none; margin: -0.4em 0 1.6em; padding: 0 0 0 16px; border-left: 3px solid var(--rule); display: grid; gap: 10px; }
+.refs li { font-size: 15px; line-height: 1.55; }
+.refs a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.refs a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.refs small { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.end { margin-top: 36px; padding: 26px; background: var(--tint); border-radius: 14px; display: grid; gap: 8px; text-align: center; justify-items: center; }
+.end h3 { margin: 0; font-size: 18px; }
+.end p { margin: 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.65; max-width: 32em; }
+.fine { font-size: 13px; color: var(--ink-3); line-height: 1.7; margin-top: 24px; }
+
+/* 상세 */
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); margin: 0; }
+.facts div { padding: 12px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+.facts div:nth-child(odd) { padding-right: 16px; }
+.facts dt { font-size: 12.5px; color: var(--ink-3); }
+.facts dd { margin: 2px 0 0; font-size: 15px; overflow-wrap: anywhere; }
+.facts .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { .facts { grid-template-columns: minmax(0, 1fr); } .facts div:nth-child(odd) { padding-right: 0; } }
+.srcbox { margin-top: 28px; display: grid; gap: 10px; }
+.srcbox h2 { margin: 0; font-size: 17px; font-weight: 700; }
+.srcbox .label { font-size: 12.5px; color: var(--ink-3); }
+.srcbox blockquote { margin: 0; padding: 16px 18px; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; font-size: 15px; line-height: 1.75; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.actions a.btn { text-decoration: none; }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 32px; }
+.pager a { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 10px; text-decoration: none; font-size: 13.5px; min-width: 0; }
+.pager a span { font-size: 12px; color: var(--ink-3); }
+.pager a b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pager a:hover { border-color: var(--accent); }
+.pager .next { text-align: right; }
+.back-issues { margin-top: 36px; }
+.issue-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.issue-list a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 12px 16px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; text-decoration: none; }
+.issue-list a:hover { border-color: var(--accent); }
+.issue-list b { font-weight: 700; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.issue-list .num { font-size: 12.5px; color: var(--ink-3); white-space: nowrap; }
+.ib { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.ib.monthly { background: var(--tint); color: var(--ink-2); }
+@media (max-width: 560px) { .issue-list a { grid-template-columns: auto minmax(0, 1fr); } .issue-list .num { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .prose { font-size: 17px; } .prose h2 { font-size: 20px; } .subtitle { font-size: 16.5px; } }
+</style>
+
+<header class="pub">
+  <div class="wide">
+    <a class="brand" href="#home"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M8 4h11l6 6v18H8z" fill="#FFFFFF"/><path d="M19 4v6h6" fill="#C9D7F2"/><rect x="11" y="14" width="11" height="2.4" rx="1.2" fill="#E30613"/><rect x="11" y="18.5" width="11" height="2.4" rx="1.2" fill="#1F4AA8"/><rect x="11" y="23" width="7" height="2.4" rx="1.2" fill="#1E9B4B"/></svg></span><span>WTO 식품 통보 브리프</span></a>
+    <div class="bar-actions">
+      <button type="button" class="ghost" id="bm-btn" aria-pressed="false" title="북마크한 통보만 보기"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span>북마크</span><span class="n" id="bm-count">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="v-home" class="wide" aria-label="홈"></section>
+  <article id="v-post" class="col" hidden></article>
+  <article id="v-item" class="col" hidden></article>
+</main>
+
+<script>
+(function () {
+  const ISSUES = /*DATA*/;
+  const GROUPS = ['식품안전', '식품 TBT', '동물위생', '식물검역'];
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fd = (d) => d ? d.replace(/-/g, '.') : '';
+  const today = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
+  const left = (d) => Math.round((Date.parse(d) - Date.parse(today)) / 864e5);
+  const md = (d) => { const [, m, dd] = d.split('-'); return `${+m}월 ${+dd}일`; };
+  const postId = (x) => 'issue-' + x.id;
+  const itemId = (s) => 'n-' + s.replace(/[^A-Za-z0-9]+/g, '-');
+  const readMin = (x) => Math.max(2, Math.round((x.note.lead + x.note.themes.map(t => t.text).join('')).length / 400) + 1);
+  const ISSUE = ISSUES[0];
+  const ALL = ISSUES.flatMap(i => i.items.map(x => ({ ...x, issue: i })));
+  // 같은 통보가 월간호와 주간호에 함께 실린 경우(10.26~10.31) 최신 호 기준 1건으로 셈
+  const UNIQ = (() => { const m = new Map(); ALL.forEach(x => { if (!m.has(x.sym)) m.set(x.sym, x); }); return [...m.values()]; })();
+  const issuesOf = (sym) => ISSUES.filter(i => i.items.some(y => y.sym === sym));
+  const NUM = ['영', '한', '두', '세', '네', '다섯', '여섯'];
+  const span = (x) => x.kind === 'monthly' ? `${+x.from.slice(5, 7)}월 한 달 동안` : `${md(x.from)}~${md(x.to)} 기간에`;
+  const scopeItems = () => F.scope === 'all' ? UNIQ : (ISSUES.find(i => i.id === F.scope) || ISSUE).items;
+  const BM_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>';
+
+  // 북마크(이 브라우저에만 저장)
+  let marks = new Set();
+  try { marks = new Set(JSON.parse(localStorage.getItem('wto-archive-marks') || '[]')); } catch (e) {}
+  const saveMarks = () => { try { localStorage.setItem('wto-archive-marks', JSON.stringify([...marks])); } catch (e) {} $('bm-count').textContent = marks.size; };
+  const toggleMark = (sym) => { marks.has(sym) ? marks.delete(sym) : marks.add(sym); saveMarks(); };
+
+  let F = { q: '', group: '', member: '', open: false, marked: false, scope: ISSUE.id };
+
+  function dueText(x) {
+    if (!x.deadline) return '<span class="due">의견 기한 없음</span>';
+    const n = left(x.deadline);
+    if (n < 0) return `<span class="due">의견 ${fd(x.deadline)} 마감</span>`;
+    return `<span class="due ${n <= 14 ? 'soon' : ''}">의견 ${fd(x.deadline)}까지 · D-${n}</span>`;
+  }
+  const typeBadge = (x) => /긴급/.test(x.type) ? `<span class="badge alert">${esc(x.type)}</span>` : /정정|추가|개정/.test(x.type) ? `<span class="badge">${esc(x.type)}</span>` : '';
+
+  function card(x) {
+    return `<li class="ncard">
+      <div class="nmeta"><b>${esc(x.member)}</b><span>·</span><span class="sym">${esc(x.sym)}${x.more ? ' 외 ' + x.more + '건' : ''}</span><span class="badge accent">${esc(x.group)}</span><span class="badge">${esc(x.topic)}</span>${typeBadge(x)}${F.scope === 'all' ? issuesOf(x.sym).map(j => `<span class="badge">${esc(j.badge)}</span>`).join('') : ''}</div>
+      <h3><a href="#${itemId(x.sym)}">${esc(x.ko)}</a></h3>
+      <p class="orig" lang="en">${esc(x.orig)}</p>
+      <div class="nfoot"><span class="num">배포 ${fd(x.date)}</span>${dueText(x)}<span class="sp"></span>
+        <button type="button" class="mark" data-mark="${esc(x.sym)}" aria-pressed="${marks.has(x.sym)}">${BM_ICON}${marks.has(x.sym) ? '저장됨' : '북마크'}</button>
+        <a class="more" href="#${itemId(x.sym)}">자세히 →</a></div>
+    </li>`;
+  }
+
+  function renderHome() {
+    const members = [...new Set(scopeItems().map(x => x.member))].sort((a, b) => a.localeCompare(b, 'ko'));
+    const cur = ISSUES.find(i => i.id === F.scope);
+    $('v-home').innerHTML = `
+      <div class="hero">
+        <span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M8 4h11l6 6v18H8z" fill="#FFFFFF"/><path d="M19 4v6h6" fill="#C9D7F2"/><rect x="11" y="14" width="11" height="2.4" rx="1.2" fill="#E30613"/><rect x="11" y="18.5" width="11" height="2.4" rx="1.2" fill="#1F4AA8"/><rect x="11" y="23" width="7" height="2.4" rx="1.2" fill="#1E9B4B"/></svg></span>
+        <h1>WTO 식품 통보 브리프</h1>
+        <p>WTO 회원국이 내놓는 식품 관련 SPS·TBT 통보 가운데 꼭 알아야 할 것만 골라 우리말로 정리합니다.</p>
+        <small>글로벌정보부 · 수시 발행 · 지금 실린 호는 모두 담당자 검토 전 초안</small>
+      </div>
+      <a class="featured" href="#${postId(ISSUE)}">
+        <span class="k">이번 호 · ${esc(ISSUE.badge)}</span>
+        <h2>${esc(ISSUE.note.headline)}</h2>
+        <p>${esc(ISSUE.note.subtitle)}</p>
+        <span class="meta"><span class="num">${fd(ISSUE.published)}</span><span>·</span><span>${readMin(ISSUE)}분 읽기</span><span>·</span><span>글로벌정보부</span></span>
+      </a>
+      <section class="back-issues" aria-labelledby="h-issues">
+        <div class="feed-head"><h2 id="h-issues">발행된 호</h2><span>${ISSUES.length}개 호 · 통보 ${UNIQ.length}건</span></div>
+        <ol class="issue-list">${ISSUES.map(i => `<li><a href="#${postId(i)}"><span class="ib ${i.kind}">${esc(i.badge)}</span><b>${esc(i.note.headline)}</b><span class="num">배포일 ${fd(i.from)}~${fd(i.to).slice(5)} · ${i.items.length}건</span></a></li>`).join('')}</ol>
+      </section>
+      <div class="feed-head" id="feed-top"><h2>${cur ? (cur === ISSUE ? '이번 호 통보' : esc(cur.badge) + ' 통보') : '전체 호 통보'}</h2><span>${cur ? `배포일 ${fd(cur.from)}~${fd(cur.to).slice(5)} · 식품 관련 ${cur.items.length}건` : `${fd(ISSUES[ISSUES.length - 1].from)}~${fd(ISSUE.to).slice(5)} · 중복 제외 ${UNIQ.length}건`}</span></div>
+      <div class="toolbar" role="search">
+        <div class="row1">
+          <select id="f-scope" aria-label="호 선택">${ISSUES.map(i => `<option value="${i.id}" ${F.scope === i.id ? 'selected' : ''}>${esc(i.badge)} · ${esc(i.label)}${i === ISSUE ? ' (이번 호)' : ''}</option>`).join('')}<option value="all" ${F.scope === 'all' ? 'selected' : ''}>전체 호</option></select>
+          <input type="search" id="f-q" placeholder="제목, 품목, 물질명, 통보번호" aria-label="통보 검색" value="${esc(F.q)}">
+          <select id="f-group" aria-label="분야"><option value="">전체 분야</option>${GROUPS.map(g => `<option ${F.group === g ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select>
+          <select id="f-member" aria-label="통보국"><option value="">전체 통보국</option>${members.map(m => `<option ${F.member === m ? 'selected' : ''}>${esc(m)}</option>`).join('')}</select>
+        </div>
+        <div class="row2">
+          <label class="chk" for="f-open"><input type="checkbox" id="f-open" ${F.open ? 'checked' : ''}>의견 제출 기한 진행 중</label>
+          <label class="chk" for="f-marked"><input type="checkbox" id="f-marked" ${F.marked ? 'checked' : ''}>북마크만</label>
+          <span id="f-count" class="num" role="status"></span>
+          <button type="button" class="clear" id="f-clear">필터 해제</button>
+        </div>
+      </div>
+      <ul class="feed" id="feed"></ul>
+      <div class="about">
+        <h3>WTO 식품 통보 브리프는</h3>
+        <p>WTO ePing에 배포된 SPS 통보 전체와 식품 관련 TBT 통보를 모아, Claude가 원문을 읽고 초안을 쓰면 담당자가 확인해 정리합니다. 발행은 수시로 합니다. 지금 실린 호의 국문 제목·분류·편집자 노트는 모두 담당자 검토 전 초안입니다.${ALL.length > UNIQ.length ? ' 기간이 겹치는 호가 있어, 같은 통보가 두 호에 함께 실린 경우 전체 호 보기에서는 1건으로 셉니다.' : ''} 국문 제목은 원제를 바탕으로 한 참고용이며, 규정의 법적 의미는 원문으로 확인해 주세요. 북마크는 지금 쓰는 브라우저에만 저장됩니다.</p>
+      </div>`;
+    const bind = (id, key, ev = 'change', val = (e) => e.target.value) => $(id).addEventListener(ev, (e) => { F[key] = val(e); renderFeed(); });
+    let t = null; $('f-q').addEventListener('input', (e) => { clearTimeout(t); t = setTimeout(() => { F.q = e.target.value; renderFeed(); }, 120); });
+    bind('f-group', 'group'); bind('f-member', 'member');
+    $('f-scope').addEventListener('change', (e) => { F.scope = e.target.value; F.member = ''; renderHome(); syncBm(); $('feed-top')?.scrollIntoView({ block: 'start' }); });
+    bind('f-open', 'open', 'change', e => e.target.checked); bind('f-marked', 'marked', 'change', e => e.target.checked);
+    $('f-clear').onclick = () => { F = { q: '', group: '', member: '', open: false, marked: false, scope: F.scope }; renderHome(); syncBm(); };
+    renderFeed();
+  }
+
+  function renderFeed() {
+    const q = F.q.trim().toLowerCase();
+    const base = F.scope === 'all' ? UNIQ : scopeItems().map(x => ({ ...x, issue: ISSUES.find(i => i.id === F.scope) }));
+    const rows = base.filter(x => (!F.group || x.group === F.group) && (!F.member || x.member === F.member) &&
+      (!F.open || (x.deadline && left(x.deadline) >= 0)) && (!F.marked || marks.has(x.sym)) &&
+      (!q || [x.sym, x.member, x.topic, x.ko, x.orig, x.products, x.hs, x.desc].join(' ').toLowerCase().includes(q)))
+      .sort((a, b) => (a.deadline && left(a.deadline) >= 0 ? 0 : 1) - (b.deadline && left(b.deadline) >= 0 ? 0 : 1) || GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group) || b.date.localeCompare(a.date));
+    const active = F.q || F.group || F.member || F.open || F.marked;
+    $('f-count').textContent = `${rows.length}건`;
+    $('f-clear').hidden = !active;
+    $('feed').innerHTML = rows.length ? rows.map(card).join('') :
+      `<li class="empty"><b>${F.marked && !marks.size ? '아직 북마크한 통보가 없습니다' : '조건에 맞는 통보가 없습니다'}</b><span>${F.marked && !marks.size ? '카드의 북마크를 누르면 여기에 모입니다.' : '검색어나 필터를 바꿔 보세요.'}</span></li>`;
+    $('feed').querySelectorAll('[data-mark]').forEach(b => b.onclick = () => { toggleMark(b.dataset.mark); renderFeed(); });
+  }
+
+  function ref(x) {
+    const d = x.deadline && left(x.deadline) >= 0 ? ` · 의견 ${md(x.deadline)}까지` : '';
+    return `<li><a href="#${itemId(x.sym)}">${esc(x.member)} — ${esc(x.ko)}</a><small><span class="sym">${esc(x.sym)}</span>${d}</small></li>`;
+  }
+
+  function renderPost(x) {
+    const map = Object.fromEntries(x.items.map(i => [i.sym, i])), r = x.raw;
+    const open = x.items.filter(i => i.deadline && left(i.deadline) >= 0).length;
+    const due = x.items.filter(i => i.deadline && left(i.deadline) >= 0 && left(i.deadline) <= 21).sort((a, b) => a.deadline.localeCompare(b.deadline));
+    $('v-post').innerHTML = `
+      <header class="post-head">
+        <a class="back" href="#home">← WTO 식품 통보 브리프</a>
+        <span class="kicker">${esc(x.badge)} · ${esc(x.label)}${x.edition ? ' · ' + esc(x.edition) : ''}</span>
+        <h1>${esc(x.note.headline)}</h1>
+        <p class="subtitle">${esc(x.note.subtitle)}</p>
+        <div class="byline"><span class="avatar" aria-hidden="true">글</span><div><b>글로벌정보부</b><span class="num">${fd(x.published)} · ${readMin(x)}분 읽기</span></div></div>
+      </header>
+      <div class="prose">
+        <p>${span(x)} WTO에 배포된 통보는 공동 통보를 하나로 셈하면 ${r.spsUnique + r.tbtUnique}건이었습니다. 이 가운데 SPS 통보 전부와 식품 관련 TBT 통보를 더해 <b>${x.items.length}건</b>을 살펴봤고, ${open ? `${open}건은 아직 의견을 낼 수 있습니다` : '의견 제출 기한이 남은 통보는 없습니다'}. 그중 눈여겨볼 흐름은 ${NUM[x.note.themes.length] || x.note.themes.length} 가지입니다.</p>
+        ${x.note.themes.map(t => `<h2>${esc(t.title)}</h2><p>${esc(t.text)}</p><ul class="refs">${t.syms.map(s => map[s]).filter(Boolean).map(ref).join('')}</ul>`).join('')}
+        ${due.length ? `<h2>의견 제출 기한이 다가오는 통보</h2><p>앞으로 3주 안에 마감되는 통보는 ${due.length}건이고, 가장 빠른 마감은 ${md(due[0].deadline)}입니다.</p><ul class="refs">${due.map(ref).join('')}</ul>` : ''}
+        <p>나머지 통보는 <a href="#home" id="to-feed">이 호의 통보 목록</a>에서 분야·통보국별로 찾아볼 수 있습니다.</p>
+      </div>
+      <nav class="pager" aria-label="다른 호">
+        ${(() => { const k = ISSUES.indexOf(x), older = ISSUES[k + 1], newer = ISSUES[k - 1];
+          return (older ? `<a href="#${postId(older)}"><span>← 이전 호 · ${esc(older.badge)}</span><b>${esc(older.note.headline)}</b></a>` : '<span></span>') +
+                 (newer ? `<a class="next" href="#${postId(newer)}"><span>다음 호 · ${esc(newer.badge)} →</span><b>${esc(newer.note.headline)}</b></a>` : '<span></span>'); })()}
+      </nav>
+      <p class="fine">국문 제목은 원제를 바탕으로 짧게 옮긴 참고용입니다. 규정의 법적 의미와 세부 기준은 원문으로 확인하세요. 출처: WTO ePing 통보 데이터(WTO API, ${fd(x.fetched)} 조회).</p>`;
+    $('to-feed').onclick = () => { F = { q: '', group: '', member: '', open: false, marked: false, scope: x.id }; setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 40); };
+  }
+
+  function renderItem(x) {
+    const home = x.issue, list = home.items, i = list.findIndex(y => y.sym === x.sym);
+    const ins = issuesOf(x.sym);
+    const prev = list[i - 1], next = list[i + 1];
+    const fact = (k, v, full) => v ? `<div class="${full ? 'full' : ''}"><dt>${k}</dt><dd>${v}</dd></div>` : '';
+    $('v-item').innerHTML = `
+      <header class="post-head">
+        <a class="back" href="#${postId(home)}">← ${esc(home.badge)}</a>
+        <span class="kicker">${esc(x.member)} · ${esc(x.group)} · ${esc(x.topic)}</span>
+        <h1 style="font-size:clamp(24px,5vw,32px)">${esc(x.ko)}</h1>
+        <p class="subtitle" lang="en" style="font-size:15.5px">${esc(x.orig)}</p>
+        <div class="byline"><span class="avatar" aria-hidden="true">${esc(x.area)}</span><div><b class="sym" style="font-size:13.5px">${esc(x.sym)}${x.more ? ' 외 ' + x.more + '건' : ''}</b><span class="num">배포 ${fd(x.date)} · ${esc(x.type)}</span></div><span class="sp"></span>
+          <button type="button" class="ghost" id="it-mark" aria-pressed="${marks.has(x.sym)}">${BM_ICON}<span>${marks.has(x.sym) ? '저장됨' : '북마크'}</span></button></div>
+      </header>
+      <dl class="facts">
+        ${fact('의견 제출 기한', x.deadline ? `${fd(x.deadline)}${left(x.deadline) >= 0 ? ` <span style="color:var(--${left(x.deadline) <= 14 ? 'warn' : 'ink-3'});font-size:13px">D-${left(x.deadline)}</span>` : ' (마감)'}` : '기재 없음')}
+        ${fact('통보 유형', esc(x.type))}
+        ${fact('실린 호', ins.map(j => `<a href="#${postId(j)}">${esc(j.badge)}</a>`).join(' · '))}
+        ${fact('채택 예정', esc(x.adopt) || '기재 없음')}
+        ${fact('시행 예정', esc(x.eif) || '기재 없음')}
+        ${fact('대상 품목', esc(x.products) || '기재 없음', true)}
+        ${x.hs ? fact('HS 코드', `<span class="num">${esc(x.hs)}</span>`, true) : ''}
+        ${x.note ? fact('비고', esc(x.note), true) : ''}
+      </dl>
+      <section class="srcbox" aria-labelledby="h-src">
+        <h2 id="h-src">통보 내용</h2>
+        <span class="label">WTO ePing에 등록된 설명을 원문 그대로 옮겼습니다.</span>
+        <blockquote lang="en">${esc(x.desc) || '설명이 등록되지 않았습니다.'}</blockquote>
+      </section>
+      <div class="actions"><a class="btn" href="${esc(x.link)}" target="_blank" rel="noopener">WTO 원문 열기</a></div>
+      <nav class="pager" aria-label="다른 통보">
+        ${prev ? `<a href="#${itemId(prev.sym)}"><span>← 이전 통보</span><b>${esc(prev.ko)}</b></a>` : '<span></span>'}
+        ${next ? `<a class="next" href="#${itemId(next.sym)}"><span>다음 통보 →</span><b>${esc(next.ko)}</b></a>` : '<span></span>'}
+      </nav>
+      <p class="fine">국문 제목은 참고용입니다. 법적 의미와 세부 기준은 원문으로 확인하세요.</p>`;
+    $('it-mark').onclick = () => { toggleMark(x.sym); renderItem(x); };
+  }
+
+  function syncBm() { $('bm-count').textContent = marks.size; $('bm-btn').setAttribute('aria-pressed', String(F.marked)); }
+  $('bm-btn').onclick = () => { F.marked = !F.marked; if (location.hash && location.hash !== '#home') location.hash = 'home'; else { renderHome(); } syncBm(); setTimeout(() => $('feed')?.scrollIntoView({ block: 'start' }), 30); };
+
+  function route() {
+    const h = location.hash.slice(1);
+    const post = ISSUES.find(i => postId(i) === h);
+    const item = UNIQ.find(x => itemId(x.sym) === h);
+    $('v-home').hidden = !!(post || item); $('v-post').hidden = !post; $('v-item').hidden = !item;
+    if (post) { renderPost(post); document.title = post.note.headline + ' · WTO 식품 통보 브리프'; }
+    else if (item) { renderItem(item); document.title = item.ko + ' · WTO 식품 통보 브리프'; }
+    else { renderHome(); document.title = 'WTO 식품 통보 브리프'; if (F.scope !== ISSUE.id || F.q || F.group || F.member || F.open || F.marked) setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 30); }
+    syncBm(); if (!(!post && !item && (F.scope !== ISSUE.id))) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>

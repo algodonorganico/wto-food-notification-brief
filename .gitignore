@@ -1,0 +1,11 @@
+# secrets
+*.key
+wto_key
+.env
+
+# build inputs fetched from npm
+node_modules/
+fonts/
+
+# python
+__pycache__/
