@@ -110,10 +110,10 @@ def build_month(m, label, f, t):
     assert not miss, miss
     excl = {('G/TBT/N/' + k): v for k, v in tbt['EXCL'].items() if ('G/TBT/N/' + k) in groups['tbt']}
     return {
-        'id': f'2026-{m}', 'kind': 'monthly', 'badge': label, 'label': f'2026년 {int(m)}월호', 'edition': '시범 월간호',
+        'id': f'2026-{m}', 'kind': 'monthly', 'badge': label, 'label': f'2026년 {int(m)}월호' if m.isdigit() else m, 'edition': '시범 월간호',
         'published': NOTES[m]['published'], 'from': f, 'to': t, 'fetched': '2026-11-06', 'raw': raw, 'note': NOTES[m]['note'],
         'top': [], 'items': sorted(items, key=lambda r: (ORDER[r['group']], r['date'], r['sym'])),
-        'criteria': ['WTO ePing API에서 배포일 기준으로 해당 월의 SPS 통보 전체와 TBT 통보 전체를 수집',
+        'criteria': ['WTO ePing API에서 배포일 기준으로 해당 기간의 SPS 통보 전체와 TBT 통보 전체를 수집',
                      '여러 회원국이 같은 문서로 낸 공동 통보는 1건으로 병합',
                      'TBT는 ICS 67번대(식품기술), ePing 키워드 "Food standards", HS 1~24류(식품) 중 하나에 해당하는 건을 고른 뒤 Claude가 원문을 읽고 가감(담당자 검토 전 초안)',
                      'SPS와 같은 문서를 TBT로도 낸 경우 TBT 쪽을 빼고 SPS 건 비고에 표시',
@@ -139,6 +139,11 @@ weekly = json.load(open(ROOT / 'data' / 'issues.json'))
 for w in weekly:
     w.update({'kind': 'weekly', 'badge': f"주간 No. {w['no']:02d}"})
 issues += weekly
+# 주간 호(월간과 같은 큐레이션 방식): (태그, 시작일, 종료일, 수집일)
+for tag, f, t, fetched in [('w2', '2026-11-02', '2026-11-08', '2026-11-09')]:
+    x = build_month(tag, '', f, t)
+    x.update({'id': f'2026-11-{tag}', 'kind': 'weekly', 'fetched': fetched})
+    issues.append(x)
 for i, x in enumerate(sorted(issues, key=lambda x: x['from'])):
     x['seq'] = i + 1
     x['badge'] = f"No. {i + 1:02d}"

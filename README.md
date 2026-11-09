@@ -8,7 +8,7 @@ An internal digest of food-related WTO SPS and TBT notifications, summarised in 
 
 | Path | Contents |
 |---|---|
-| `site/index.html` | Cumulative brief: No. 01 (Sept 2026), No. 02 (Oct 2026), No. 03 (26 Oct–1 Nov 2026) |
+| `site/index.html` | Cumulative brief: No. 01 (Sept 2026), No. 02 (Oct 2026), No. 03 (26 Oct–1 Nov 2026), No. 04 (2–8 Nov 2026) |
 | `site/2026-03.html` | Stand-alone issue for March 2026 |
 | `site/2026-04.html` | Stand-alone issue for April 2026 |
 | `src/archive.html` | Page template (fonts and data are injected at build time) |
