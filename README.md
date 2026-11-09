@@ -26,7 +26,7 @@ The finished HTML files are self-contained (fonts and data embedded) and open wi
 1. **Fetch** — `scripts/fetch.py` pulls all SPS and TBT notifications distributed in a period from the WTO ePing API.
 2. **Merge and shortlist** (`scripts/candidates.py <month>`) — joint notifications are merged into one entry. TBT items are shortlisted if they have an ICS 67 code, the ePing keyword "Food standards", or an HS code in chapters 1–24.
 3. **Read and decide** — the original texts are read; TBT items duplicating an SPS notification, or not about food, are excluded with a reason; Korean titles and categories are written (`work/mo/cur_*.py`). **This step is meant to be confirmed by a staff member.**
-4. **Build** — `scripts/make_archive.py` assembles issue data; `scripts/build.py` embeds fonts and data into the page.
+4. **Build** — `scripts/make_archive.py` assembles issue data (it stops if a notifying member has no Korean name in its `KO` table); `scripts/build.py` embeds fonts and data into the page.
 
 ```bash
 # 1. fetch (the API key is passed as an environment variable and is never committed)

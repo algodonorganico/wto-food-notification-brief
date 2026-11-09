@@ -48,7 +48,10 @@ def load(py):
 def member_label(rows):
     codes = {(r.get('documentSymbol') or '').split(',')[0].strip().split('/')[3][:3] for r in rows}
     n = len({r['notifyingMember'] for r in rows})
-    first = KO.get(rows[0]['notifyingMember'], rows[0]['notifyingMember'])
+    name = rows[0]['notifyingMember']
+    if name not in KO:   # 대조표에 없는 국가명은 영문으로 실리지 않도록 빌드를 멈춤
+        raise SystemExit(f"국가명 대조표(KO)에 없음: '{name}' ({rows[0]['documentSymbol'].split(',')[0]}) — scripts/make_archive.py의 KO에 한글명을 추가한 뒤 다시 실행하세요.")
+    first = KO[name]
     if n <= 1:
         return first
     allsyms = {s.strip().split('/')[3][:3] for r in rows for s in r['documentSymbol'].split(',')}
