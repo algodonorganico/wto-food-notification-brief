@@ -31,7 +31,7 @@ KO = {'Argentina': '아르헨티나', 'Australia': '호주', 'Bahrain, Kingdom o
       'Singapore': '싱가포르', 'South Africa': '남아프리카공화국', 'Spain': '스페인', 'Sweden': '스웨덴', 'Switzerland': '스위스',
       'Tanzania': '탄자니아', 'Thailand': '태국', 'Türkiye': '튀르키예', 'Uganda': '우간다', 'Ukraine': '우크라이나',
       'United Arab Emirates': '아랍에미리트', 'United Kingdom': '영국', 'United States of America': '미국', 'Viet Nam': '베트남',
-      'Yemen': '예멘', 'Zambia': '잠비아', 'Albania': '알바니아', 'Italy': '이탈리아', 'Kazakhstan': '카자흐스탄',
+      'Yemen': '예멘', 'Zambia': '잠비아', 'Albania': '알바니아', 'Morocco': '모로코', 'Myanmar': '미얀마', 'Armenia': '아르메니아', 'Nepal': '네팔', 'Italy': '이탈리아', 'Kazakhstan': '카자흐스탄',
       'Malawi': '말라위', 'Poland': '폴란드', 'Sri Lanka': '스리랑카', 'Uruguay': '우루과이'}
 GULF = {'ARE', 'BHR', 'KWT', 'OMN', 'QAT', 'SAU', 'YEM'}
 EAC = {'BDI', 'KEN', 'RWA', 'TZA', 'UGA'}
