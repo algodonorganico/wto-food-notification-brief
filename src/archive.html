@@ -198,7 +198,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   // 같은 통보가 월간호와 주간호에 함께 실린 경우(10.26~10.31) 최신 호 기준 1건으로 셈
   const UNIQ = (() => { const m = new Map(); ALL.forEach(x => { if (!m.has(x.sym)) m.set(x.sym, x); }); return [...m.values()]; })();
   const issuesOf = (sym) => ISSUES.filter(i => i.items.some(y => y.sym === sym));
-  const NUM = ['영', '한', '두', '세', '네', '다섯', '여섯'];
   const span = (x) => x.kind === 'monthly' ? `${+x.from.slice(5, 7)}월 한 달 동안` : `${md(x.from)}~${md(x.to)} 기간에`;
   const scopeItems = () => F.scope === 'all' ? UNIQ : (ISSUES.find(i => i.id === F.scope) || ISSUE).items;
   const BM_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>';
@@ -237,7 +236,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div class="hero">
         <span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M8 4h11l6 6v18H8z" fill="#FFFFFF"/><path d="M19 4v6h6" fill="#C9D7F2"/><rect x="11" y="14" width="11" height="2.4" rx="1.2" fill="#E30613"/><rect x="11" y="18.5" width="11" height="2.4" rx="1.2" fill="#1F4AA8"/><rect x="11" y="23" width="7" height="2.4" rx="1.2" fill="#1E9B4B"/></svg></span>
         <h1>WTO 식품 통보 브리프</h1>
-        <p>WTO 회원국이 내놓는 식품 관련 SPS·TBT 통보 가운데 꼭 알아야 할 것만 골라 우리말로 정리합니다.</p>
+        <p>WTO 회원국이 통보한 식품 관련 SPS·TBT 조치를 국문으로 정리한 자료입니다.</p>
         <small>글로벌정보부 · 수시 발행 · 지금 실린 호는 모두 담당자 검토 전 초안</small>
       </div>
       <a class="featured" href="#${postId(ISSUE)}">
@@ -312,7 +311,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <div class="byline"><span class="avatar" aria-hidden="true">글</span><div><b>글로벌정보부</b><span class="num">${fd(x.published)} · ${readMin(x)}분 읽기</span></div></div>
       </header>
       <div class="prose">
-        <p>${span(x)} WTO에 배포된 통보는 공동 통보를 하나로 셈하면 ${r.spsUnique + r.tbtUnique}건이었습니다. 이 가운데 SPS 통보 전부와 식품 관련 TBT 통보를 더해 <b>${x.items.length}건</b>을 살펴봤고, ${open ? `${open}건은 아직 의견을 낼 수 있습니다` : '의견 제출 기한이 남은 통보는 없습니다'}. 그중 눈여겨볼 흐름은 ${NUM[x.note.themes.length] || x.note.themes.length} 가지입니다.</p>
+        <p>${span(x)} WTO에 배포된 통보는 공동 통보를 하나로 셈하면 ${r.spsUnique + r.tbtUnique}건이었습니다. 이 가운데 SPS 통보 전부와 식품 관련 TBT 통보 <b>${x.items.length}건</b>을 실었고, ${open ? `${open}건은 의견 제출 기한이 남아 있습니다` : '의견 제출 기한이 남은 통보는 없습니다'}. 주요 동향은 다음과 같습니다.</p>
         ${x.note.themes.map(t => `<h2>${esc(t.title)}</h2><p>${esc(t.text)}</p><ul class="refs">${t.syms.map(s => map[s]).filter(Boolean).map(ref).join('')}</ul>`).join('')}
         ${due.length ? `<h2>의견 제출 기한이 다가오는 통보</h2><p>앞으로 3주 안에 마감되는 통보는 ${due.length}건이고, 가장 빠른 마감은 ${md(due[0].deadline)}입니다.</p><ul class="refs">${due.map(ref).join('')}</ul>` : ''}
         <p>나머지 통보는 <a href="#home" id="to-feed">이 호의 통보 목록</a>에서 분야·통보국별로 찾아볼 수 있습니다.</p>
