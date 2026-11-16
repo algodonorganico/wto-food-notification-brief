@@ -14,6 +14,9 @@ import os
 data = json.loads((ROOT / os.environ.get('WTO_DATA', 'data/issues.json')).read_text(encoding='utf-8'))
 data.sort(key=lambda x: x['from'], reverse=True)  # 최신 호가 앞
 DATA = json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import tags  # 태그 막대 순서
+TAGS = json.dumps(tags.TAGS, ensure_ascii=False)
 
 
 def b64(raw):
@@ -71,7 +74,7 @@ def noto(weights=(400, 500, 700, 800)):
 
 LATIN_DIR = pathlib.Path(sys.argv[4]) if len(sys.argv) > 4 else None
 faces = noto() if (FONT_DIR / '400.css').exists() else pretendard()
-out = page.replace('/*FONTS*/', '\n'.join(faces)).replace('/*DATA*/', DATA)
+out = page.replace('/*FONTS*/', '\n'.join(faces)).replace('/*DATA*/', DATA).replace('/*TAGS*/[]', TAGS)
 (ROOT / 'site').mkdir(exist_ok=True)
 (ROOT / 'site' / OUT).write_text(out, encoding='utf-8')
 print(f'site/{OUT} {len(out.encode())/1024:.0f} KB, issues {len(data)}, font faces {len(faces)}')

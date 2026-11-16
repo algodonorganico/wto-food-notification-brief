@@ -4,6 +4,8 @@
 notes.json(호별 편집자 노트), ../wk/curation.json(주간 1호 큐레이션 — 10월 마지막 주와 겹치는 건에 재사용)
 """
 import collections, html, json, pathlib, re, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import tags  # 카테고리 태그 규칙
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 MO = pathlib.Path(sys.argv[1])
 OUT = ROOT / 'data' / 'archive.json'
@@ -133,6 +135,7 @@ if len(sys.argv) > 2 and sys.argv[2] in ('april', 'single'):   # 단독판: sing
     x = build_month(m, '단독판', f'2026-{m}-01', f'2026-{m}-{last:02d}')
     x.update({'id': f'2026-{m}', 'label': f'2026년 {int(m)}월분', 'edition': '', 'seq': 1})
     out = ROOT / 'data' / ('april.json' if m == '04' else f'2026-{m}.json')
+    tags.apply(x['items'])
     out.write_text(json.dumps([x], ensure_ascii=False, indent=1), encoding='utf-8')
     c = collections.Counter(i['group'] for i in x['items'])
     print(out.name, x['badge'], len(x['items']), dict(c), x['raw'])
@@ -152,6 +155,8 @@ for i, x in enumerate(sorted(issues, key=lambda x: x['from'])):
     x['badge'] = f"No. {i + 1:02d}"
     x['label'] = f"2026년 {int(x['from'][5:7])}월분" if x['kind'] == 'monthly' else f"{x['from'][:4]}.{x['from'][5:7]}.{x['from'][8:]}~{x['to'][5:7]}.{x['to'][8:]}"
     x['edition'] = ''
+for i in issues:
+    tags.apply(i['items'])
 OUT.write_text(json.dumps(issues, ensure_ascii=False, indent=1), encoding='utf-8')
 for x in issues:
     c = collections.Counter(i['group'] for i in x['items'])

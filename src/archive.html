@@ -89,6 +89,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .badge { font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: 5px; background: var(--tint); color: var(--ink-2); }
 .badge.alert { background: var(--alert-soft); color: var(--alert); }
 .badge.accent { background: var(--accent-soft); color: var(--accent); }
+.tag { font: inherit; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 5px; border: 1px solid var(--rule); background: var(--card); color: var(--ink-2); cursor: pointer; line-height: 1.6; }
+.tag:hover { border-color: var(--accent); color: var(--accent); }
+.tag[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags .tag i { font-style: normal; font-weight: 400; opacity: .75; margin-left: 3px; }
+.toolbar .tags { padding-top: 10px; border-top: 1px solid var(--rule); }
 .ncard h3 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.5; letter-spacing: -0.01em; }
 .ncard h3 a { text-decoration: none; }
 .ncard h3 a:hover { color: var(--accent); }
@@ -208,7 +214,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   const saveMarks = () => { try { localStorage.setItem('wto-archive-marks', JSON.stringify([...marks])); } catch (e) {} $('bm-count').textContent = marks.size; };
   const toggleMark = (sym) => { marks.has(sym) ? marks.delete(sym) : marks.add(sym); saveMarks(); };
 
-  let F = { q: '', group: '', member: '', open: false, marked: false, scope: ISSUE.id };
+  let F = { q: '', group: '', member: '', tag: '', open: false, marked: false, scope: ISSUE.id };
 
   function dueText(x) {
     if (!x.deadline) return '<span class="due">의견 기한 없음</span>';
@@ -218,10 +224,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   }
   const typeBadge = (x) => /긴급/.test(x.type) ? `<span class="badge alert">${esc(x.type)}</span>` : /정정|추가|개정/.test(x.type) ? `<span class="badge">${esc(x.type)}</span>` : '';
 
+  const TAG_ORDER = /*TAGS*/[];
+  const tagBtn = (t, n) => `<button type="button" class="tag" data-tag="${esc(t)}" aria-pressed="${F.tag === t}">#${esc(t)}${n != null ? `<i>${n}</i>` : ''}</button>`;
+  const setTag = (t) => { F.tag = F.tag === t ? '' : t; renderFeed(); $('feed-top')?.scrollIntoView({ block: 'start' }); };
+
   function card(x) {
     return `<li class="ncard">
-      <div class="nmeta"><b>${esc(x.member)}</b><span>·</span><span class="sym">${esc(x.sym)}${x.more ? ' 외 ' + x.more + '건' : ''}</span><span class="badge accent">${esc(x.group)}</span><span class="badge">${esc(x.topic)}</span>${typeBadge(x)}${F.scope === 'all' ? issuesOf(x.sym).map(j => `<span class="badge">${esc(j.badge)}</span>`).join('') : ''}</div>
+      <div class="nmeta"><b>${esc(x.member)}</b><span>·</span><span class="sym">${esc(x.sym)}${x.more ? ' 외 ' + x.more + '건' : ''}</span><span class="badge accent">${esc(x.group)}</span>${typeBadge(x)}${F.scope === 'all' ? issuesOf(x.sym).map(j => `<span class="badge">${esc(j.badge)}</span>`).join('') : ''}</div>
       <h3><a href="#${itemId(x.sym)}">${esc(x.ko)}</a></h3>
+      <div class="tags">${(x.tags || []).map(t => tagBtn(t)).join('')}</div>
       <p class="orig" lang="en">${esc(x.orig)}</p>
       <div class="nfoot"><span class="num">배포 ${fd(x.date)}</span>${dueText(x)}<span class="sp"></span>
         <button type="button" class="mark" data-mark="${esc(x.sym)}" aria-pressed="${marks.has(x.sym)}">${BM_ICON}${marks.has(x.sym) ? '저장됨' : '북마크'}</button>
@@ -263,6 +274,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <span id="f-count" class="num" role="status"></span>
           <button type="button" class="clear" id="f-clear">필터 해제</button>
         </div>
+        <div class="tags" id="f-tags" aria-label="카테고리 태그"></div>
       </div>
       <ul class="feed" id="feed"></ul>
       <div class="about">
@@ -274,23 +286,27 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     bind('f-group', 'group'); bind('f-member', 'member');
     $('f-scope').addEventListener('change', (e) => { F.scope = e.target.value; F.member = ''; renderHome(); syncBm(); $('feed-top')?.scrollIntoView({ block: 'start' }); });
     bind('f-open', 'open', 'change', e => e.target.checked); bind('f-marked', 'marked', 'change', e => e.target.checked);
-    $('f-clear').onclick = () => { F = { q: '', group: '', member: '', open: false, marked: false, scope: F.scope }; renderHome(); syncBm(); };
+    $('f-clear').onclick = () => { F = { q: '', group: '', member: '', tag: '', open: false, marked: false, scope: F.scope }; renderHome(); syncBm(); };
     renderFeed();
   }
 
   function renderFeed() {
     const q = F.q.trim().toLowerCase();
     const base = F.scope === 'all' ? UNIQ : scopeItems().map(x => ({ ...x, issue: ISSUES.find(i => i.id === F.scope) }));
-    const rows = base.filter(x => (!F.group || x.group === F.group) && (!F.member || x.member === F.member) &&
+    const pre = base.filter(x => (!F.group || x.group === F.group) && (!F.member || x.member === F.member) &&
       (!F.open || (x.deadline && left(x.deadline) >= 0)) && (!F.marked || marks.has(x.sym)) &&
-      (!q || [x.sym, x.member, x.topic, x.ko, x.orig, x.products, x.hs, x.desc].join(' ').toLowerCase().includes(q)))
+      (!q || [x.sym, x.member, x.topic, (x.tags || []).join(' '), x.ko, x.orig, x.products, x.hs, x.desc].join(' ').toLowerCase().includes(q)));
+    const cnt = {}; pre.forEach(x => (x.tags || []).forEach(t => { cnt[t] = (cnt[t] || 0) + 1; }));
+    $('f-tags').innerHTML = TAG_ORDER.filter(t => cnt[t] || F.tag === t).map(t => tagBtn(t, cnt[t] || 0)).join('');
+    const rows = pre.filter(x => !F.tag || (x.tags || []).includes(F.tag))
       .sort((a, b) => (a.deadline && left(a.deadline) >= 0 ? 0 : 1) - (b.deadline && left(b.deadline) >= 0 ? 0 : 1) || GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group) || b.date.localeCompare(a.date));
-    const active = F.q || F.group || F.member || F.open || F.marked;
+    const active = F.q || F.group || F.member || F.tag || F.open || F.marked;
     $('f-count').textContent = `${rows.length}건`;
     $('f-clear').hidden = !active;
     $('feed').innerHTML = rows.length ? rows.map(card).join('') :
       `<li class="empty"><b>${F.marked && !marks.size ? '아직 북마크한 통보가 없습니다' : '조건에 맞는 통보가 없습니다'}</b><span>${F.marked && !marks.size ? '카드의 북마크를 누르면 여기에 모입니다.' : '검색어나 필터를 바꿔 보세요.'}</span></li>`;
     $('feed').querySelectorAll('[data-mark]').forEach(b => b.onclick = () => { toggleMark(b.dataset.mark); renderFeed(); });
+    document.querySelectorAll('#f-tags [data-tag], #feed [data-tag]').forEach(b => b.onclick = () => setTag(b.dataset.tag));
   }
 
   function ref(x) {
@@ -322,7 +338,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
                  (newer ? `<a class="next" href="#${postId(newer)}"><span>다음 호 · ${esc(newer.badge)} →</span><b>${esc(newer.note.headline)}</b></a>` : '<span></span>'); })()}
       </nav>
       <p class="fine">국문 제목은 원제를 바탕으로 짧게 옮긴 참고용입니다. 규정의 법적 의미와 세부 기준은 원문으로 확인하세요. 출처: WTO ePing 통보 데이터(WTO API, ${fd(x.fetched)} 조회).</p>`;
-    $('to-feed').onclick = () => { F = { q: '', group: '', member: '', open: false, marked: false, scope: x.id }; setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 40); };
+    $('to-feed').onclick = () => { F = { q: '', group: '', member: '', tag: '', open: false, marked: false, scope: x.id }; setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 40); };
   }
 
   function renderItem(x) {
@@ -335,6 +351,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <a class="back" href="#${postId(home)}">← ${esc(home.badge)}</a>
         <span class="kicker">${esc(x.member)} · ${esc(x.group)} · ${esc(x.topic)}</span>
         <h1 style="font-size:clamp(24px,5vw,32px)">${esc(x.ko)}</h1>
+        <div class="tags" id="it-tags">${(x.tags || []).map(t => tagBtn(t)).join('')}</div>
         <p class="subtitle" lang="en" style="font-size:15.5px">${esc(x.orig)}</p>
         <div class="byline"><span class="avatar" aria-hidden="true">${esc(x.area)}</span><div><b class="sym" style="font-size:13.5px">${esc(x.sym)}${x.more ? ' 외 ' + x.more + '건' : ''}</b><span class="num">배포 ${fd(x.date)} · ${esc(x.type)}</span></div><span class="sp"></span>
           <button type="button" class="ghost" id="it-mark" aria-pressed="${marks.has(x.sym)}">${BM_ICON}<span>${marks.has(x.sym) ? '저장됨' : '북마크'}</span></button></div>
@@ -361,6 +378,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       </nav>
       <p class="fine">국문 제목은 참고용입니다. 법적 의미와 세부 기준은 원문으로 확인하세요.</p>`;
     $('it-mark').onclick = () => { toggleMark(x.sym); renderItem(x); };
+    $('it-tags').querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { F = { q: '', group: '', member: '', tag: b.dataset.tag, open: false, marked: false, scope: 'all' }; location.hash = 'home'; });
   }
 
   function syncBm() { $('bm-count').textContent = marks.size; $('bm-btn').setAttribute('aria-pressed', String(F.marked)); }
@@ -373,7 +391,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     $('v-home').hidden = !!(post || item); $('v-post').hidden = !post; $('v-item').hidden = !item;
     if (post) { renderPost(post); document.title = post.note.headline + ' · WTO 식품 통보 브리프'; }
     else if (item) { renderItem(item); document.title = item.ko + ' · WTO 식품 통보 브리프'; }
-    else { renderHome(); document.title = 'WTO 식품 통보 브리프'; if (F.scope !== ISSUE.id || F.q || F.group || F.member || F.open || F.marked) setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 30); }
+    else { renderHome(); document.title = 'WTO 식품 통보 브리프'; if (F.scope !== ISSUE.id || F.q || F.group || F.member || F.tag || F.open || F.marked) setTimeout(() => $('feed-top')?.scrollIntoView({ block: 'start' }), 30); }
     syncBm(); if (!(!post && !item && (F.scope !== ISSUE.id))) window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route);
