@@ -146,7 +146,7 @@ for w in weekly:
     w.update({'kind': 'weekly', 'badge': f"주간 No. {w['no']:02d}"})
 issues += weekly
 # 주간 호(월간과 같은 큐레이션 방식): (태그, 시작일, 종료일, 수집일)
-for tag, f, t, fetched in [('w2', '2026-11-02', '2026-11-08', '2026-11-09')]:
+for tag, f, t, fetched in [('w2', '2026-11-02', '2026-11-08', '2026-11-09'), ('w3', '2026-11-09', '2026-11-15', '2026-11-16')]:
     x = build_month(tag, '', f, t)
     x.update({'id': f'2026-11-{tag}', 'kind': 'weekly', 'fetched': fetched})
     issues.append(x)
